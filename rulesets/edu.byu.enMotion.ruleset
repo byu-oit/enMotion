@@ -1,0 +1,15 @@
+ruleset edu.byu.enMotion {
+  meta {
+    name "enMotion dispensers in a building"
+    description <<
+      Hold information about the state of all enMotion* dispensers in a building.
+      *"enMotion" is a trademark of Georgia-Pacific consumer products LP.
+    >>
+    author "Crazy Friday Pico Enthusiasts (CFPE)"
+    shares __testing
+  }
+  global {
+    __testing = { "queries": [ { "name": "__testing" } ],
+                  "events": [ ] }
+  }
+}
