@@ -30,9 +30,8 @@ ruleset edu.byu.enMotion {
       id = event:attr("id");
     }
     if status(id) == "ok" then send_directive("problem reported");
-    fired {
+    always {
       ent:tags{[id,"status"]} := "problem";
-    } else {
     }
   }
 }
