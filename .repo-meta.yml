@@ -10,7 +10,7 @@ software:
     type: library
     aliases:  # optional
     short_description: # optional
-    assignment_group:
+    assignment_group: PHIL_WINDLEY--PJW
     notes: # optional
     maintained_by: # optional
     developed_by_byu: true # optional
