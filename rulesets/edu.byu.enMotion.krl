@@ -24,4 +24,15 @@ ruleset edu.byu.enMotion {
       ent:tags := {};
     }
   }
+  rule report_problem {
+    select when tag scanned
+    pre {
+      id = event:attr("id");
+    }
+    if status(id) == "ok" then send_directive("problem reported");
+    fired {
+      ent:tags{[id,"status"]} := "problem";
+    } else {
+    }
+  }
 }
