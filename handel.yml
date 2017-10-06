@@ -1,0 +1,9 @@
+version: 1
+
+name: enMotion
+
+environments:
+  dev:
+    myapp:
+        
+# https://handel.readthedocs.io
