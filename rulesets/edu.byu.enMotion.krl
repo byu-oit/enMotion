@@ -9,10 +9,12 @@ ruleset edu.byu.enMotion {
     shares __testing, status
   }
   global {
-    __testing = { "queries": [ { "name": "__testing" },
-                               { "name": "status", "args": [ "id" ] } ],
-                  "events": [ { "domain": "tag", "type": "scanned",
-                                "attrs": [ "id" ] } ] }
+    __testing = { "queries": [ { "name": "__testing" }
+                             , { "name": "status", "args": [ "id" ] }
+                             ]
+                , "events": [ { "domain": "tag", "type": "scanned", "attrs": [ "id" ] }
+                            ]
+                }
     status = function(id) {
       ent:tags{[id,"status"]}
     }
