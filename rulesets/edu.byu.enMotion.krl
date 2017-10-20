@@ -42,7 +42,9 @@ ruleset edu.byu.enMotion {
     select when admin children_to_export
     foreach ent:tags setting(v,k)
     pre {
-      child_specs = { "name": k };
+      base_specs = { "color": "#002e5d",
+                     "rids": "edu.byu.enMotion.dispenser;io.picolabs.journal" };
+      child_specs = base_specs.put("name", k );
     }
     fired {
       raise wrangler event "new_child_request" attributes child_specs;
