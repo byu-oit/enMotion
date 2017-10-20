@@ -14,6 +14,7 @@ ruleset edu.byu.enMotion {
                              , { "name": "status", "args": [ "id" ] }
                              ]
                 , "events": [ { "domain": "tag", "type": "scanned", "attrs": [ "id" ] }
+                            , { "domain": "admin", "type": "children_to_export" }
                             ]
                 }
     status = function(id) {
@@ -35,6 +36,16 @@ ruleset edu.byu.enMotion {
     if status(id) == "ok" then send_directive("problem reported");
     always {
       ent:tags{[id,"status"]} := "problem";
+    }
+  }
+  rule one_off {
+    select when admin children_to_export
+    foreach ent:tags setting(v,k)
+    pre {
+      child_specs = { "name": k };
+    }
+    fired {
+      raise wrangler event "new_child_request" attributes child_specs;
     }
   }
 }
