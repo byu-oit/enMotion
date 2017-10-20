@@ -1,5 +1,4 @@
-ruleset edu.byu.enMotion {
-// deprecated
+ruleset edu.byu.enMotion.building {
   meta {
     name "enMotion dispensers in a building"
     description <<
