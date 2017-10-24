@@ -2,7 +2,7 @@
 echo "Content-type: text/html"
 echo
 TAG=`echo "$QUERY_STRING" | grep -o "id=[A-Z0-9-]*" | cut -d = -f 2`
-BLDG=`echo "$TAG" | grep -o "[A-Z]*"`
+BLDG=`echo "$TAG" | grep -o "^[A-Z]*"`
 ECI="VcJtdJmY3nm1ZWsvKqvARP"
 if [ "$BLDG" = "ELWC" ]
 then
@@ -20,11 +20,11 @@ cat <<EOF
 <meta charset="UTF-8">
 </head>
 <body>
+<p style="font-size:xx-large">$MSG</p>
+<pre>$BLDG_ECI</pre>
 <!-- 
 <pre>$NPE</pre>
 --> 
-<p style="font-size:xx-large">$MSG</p>
-<pre>$BLDG_ECI</pre>
 </body>
 </html>
 EOF
