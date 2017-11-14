@@ -1,4 +1,4 @@
-$schemaver: 2.0
+$schemaver: '2.0'
 repo_url: https://github.com/byu-oit/enMotion
 software:
   - aliases:
@@ -45,7 +45,9 @@ software:
       data-sensitivity: confidential
       team:
     technologies_used:
-      - 'AWS CodeBuild'
+      - AWS CodeBuild
       - Handel-Codepipeline
-      - 'AWS CodePipeline'
+      - AWS CodePipeline
+      - Handel
+      - AWS CloudFormation
     type: library
