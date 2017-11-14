@@ -46,4 +46,6 @@ software:
       team:
     technologies_used:
       - 'AWS CodeBuild'
+      - Handel-Codepipeline
+      - 'AWS CodePipeline'
     type: library
