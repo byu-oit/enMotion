@@ -50,4 +50,7 @@ software:
       - AWS CodePipeline
       - Handel
       - AWS CloudFormation
+      - KRL
+      - HTML
+      - Shell
     type: library
