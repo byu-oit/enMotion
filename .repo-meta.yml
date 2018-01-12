@@ -1,4 +1,4 @@
-$schemaver: '2.0'
+$schemaver: 2.1
 repo_url: https://github.com/byu-oit/enMotion
 software:
   - aliases:
@@ -39,11 +39,6 @@ software:
           physical_url:
           product_page:
           virtual_url:
-    standard_change_template_id:
-    tags:
-      app: enMotion
-      data-sensitivity: confidential
-      team:
     technologies_used:
       - AWS CodeBuild
       - Handel-Codepipeline
@@ -54,3 +49,5 @@ software:
       - HTML
       - Shell
     type: library
+    data_sensitivity: confidential
+    standard_change_template:
