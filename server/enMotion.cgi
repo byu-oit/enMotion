@@ -20,16 +20,30 @@ cat <<EOF
 <link rel="stylesheet" href="https://cdn.byu.edu/byu-theme-components/latest/byu-theme-components.min.css" />
 <script async src="https://cdn.byu.edu/byu-theme-components/latest/byu-theme-components.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+html, body { height: 100%; }
+.containing-element {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.page-content { flex-grow: 1; }
+</style>
 <title>enMotion</title>
 <meta charset="UTF-8">
 </head>
 <body>
+<div class="containing-element">
 <byu-header>
   <h1 slot="site-title">enMotion problem report</h1>
 </byu-header>
-<p style="font-size:xx-large">$MSG</p>
+<div class="page-content">
+<p>$MSG</p>
 <pre>$BLDG_ECI</pre>
 <pre>$NPE</pre>
+</div>
+<byu-footer></byu-footer>
+</div>
 </body>
 </html>
 EOF
