@@ -7,4 +7,4 @@ Project goals
 - roll-out to ITB for all its dispensers
 - roll-out to one or two other campus buildings
 - roll-out to entire campus
-- adoption by manufacturer
+- adoption by manufacturer (update: Georgia Pacific will be adding a processor to future versions)
