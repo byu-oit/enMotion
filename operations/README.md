@@ -14,4 +14,5 @@ How to create the sticker to place beside an enMotion paper towel dispenser
 12. Attach near upper-right corner of dispenser (upper-left corner for a left dispenser)
 
 "enMotion" is a registered trademark of Georgia-Pacific
+
 "QR Code" ia a registered trademark of DENSO WAVE INCORPORATED
