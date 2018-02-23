@@ -1,5 +1,6 @@
 Project goals
 
+- Work with the Facilities team to get their buy in
 - MVP for the team tracking status ok/problem for each registered paper towel dispenser
 - MVP for the Facilities team with useful notifications
 - MVP for use by everyone working in or passing through ITB
