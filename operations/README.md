@@ -11,7 +11,7 @@ How to create the sticker to place beside an enMotion paper towel dispenser
 9. Select color printer and click Print button
 10. Trim to 10.5 cm by 14 cm
 11. Obtain sticky stuff from a receptionist, and apply near each corner
-12. Attach near upper-left corner of dispenser (upper-right corner for a left dispenser)
+12. Attach near upper-right corner of dispenser (upper-left corner for a left dispenser)
 
 "enMotion" is a registered trademark of Georgia-Pacific
 "QR Code" ia a registered trademark of DENSO WAVE INCORPORATED
