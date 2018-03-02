@@ -65,7 +65,7 @@ ruleset edu.byu.enMotion {
   }
   rule first_report_of_the_day {
     select when tag scanned id re#^(.*)$# setting(id)
-                            where ent:tags{[id,"count"]} == 1
+    if ent:tags{[id,"count"]} == 1 then noop();
     fired {
       ent:tags{[id,"status"]} := "problem";
       raise enMotion event "problem_reported" attributes event:attrs;
