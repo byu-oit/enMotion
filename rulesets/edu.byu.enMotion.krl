@@ -1,5 +1,5 @@
 ruleset edu.byu.enMotion {
-// deprecated
+// deprecated; to be replaced by edu.byu.enMotion.building
   meta {
     name "enMotion dispensers in a building"
     description <<
@@ -18,7 +18,7 @@ ruleset edu.byu.enMotion {
                             ]
                 }
     status = function(id) {
-      ent:tags{[id,"status"]}
+      id => ent:tags{[id,"status"]} | ent:tags
     }
   }
   rule initialization {
@@ -36,18 +36,6 @@ ruleset edu.byu.enMotion {
     if status(id) == "ok" then send_directive("problem reported");
     always {
       ent:tags{[id,"status"]} := "problem";
-    }
-  }
-  rule one_off {
-    select when admin children_to_export
-    foreach ent:tags setting(v,k)
-    pre {
-      base_specs = { "color": "#002e5d",
-                     "rids": "edu.byu.enMotion.dispenser;io.picolabs.journal" };
-      child_specs = base_specs.put("name", k );
-    }
-    fired {
-      raise wrangler event "new_child_request" attributes child_specs;
     }
   }
 }
