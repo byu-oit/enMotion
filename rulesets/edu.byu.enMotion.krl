@@ -40,9 +40,8 @@ ruleset edu.byu.enMotion {
     }
   }
   rule restart_count_for_a_new_day {
-    select when tag scanned
+    select when tag scanned id re#^(.*)$# setting(id)
     pre {
-      id = event:attr("id");
       last_report_timestamp = ent:tags{[id,"timestamp"]}.defaultsTo(earliest_date);
       last_report_date = last_report_timestamp.substr(0,10);
       date_now = time:add(time:now(),{"hours": -7}).substr(0,10);
@@ -53,9 +52,8 @@ ruleset edu.byu.enMotion {
     }
   }
   rule count_and_timestamp_problem_report {
-    select when tag scanned
+    select when tag scanned id re#^(.*)$# setting(id)
     pre {
-      id = event:attr("id");
       now = time:add(time:now(),{"hours": -7}); // MST
       count = ent:tags{[id,"count"]} + 1;
     }
@@ -66,7 +64,8 @@ ruleset edu.byu.enMotion {
     }
   }
   rule first_report_of_the_day {
-    select when tag scanned where ent:tags{[id,"count"]} == 1
+    select when tag scanned id re#^(.*)$# setting(id)
+                            where ent:tags{[id,"count"]} == 1
     fired {
       ent:tags{[id,"status"]} := "problem";
       raise enMotion event "problem_reported" attributes event:attrs;
