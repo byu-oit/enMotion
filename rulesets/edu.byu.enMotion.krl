@@ -7,18 +7,24 @@ ruleset edu.byu.enMotion {
       *"enMotion" is a trademark of Georgia-Pacific consumer products LP.
     >>
     author "Crazy Friday Pico Enthusiasts (CFPE)"
-    shares __testing, status
+    shares __testing, status, statusDay
   }
   global {
     __testing = { "queries": [ { "name": "__testing" }
                              , { "name": "status", "args": [ "id" ] }
                              ]
                 , "events": [ { "domain": "tag", "type": "scanned", "attrs": [ "id" ] }
-                            , { "domain": "admin", "type": "children_to_export" }
                             ]
                 }
     status = function(id) {
       id => ent:tags{[id,"status"]} | ent:tags
+    }
+    statusDay = function(date) {
+      dy = date => date | time:now().substr(0,10);
+      ld = dy.length();
+      eq = function(t1,t2){t1.substr(0,ld)==t2.substr(0,ld)};
+      rightDay = function(time){time && eq(time,dy)};
+      ent:tags.filter(function(v,k){rightDay(v{"timestamp"})})
     }
     earliest_date = "1969-12-31" // for mountain time
     ordinalize = function(n) {
