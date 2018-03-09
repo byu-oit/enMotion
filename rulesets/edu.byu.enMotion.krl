@@ -52,7 +52,7 @@ ruleset edu.byu.enMotion {
       last_report_date = last_report_timestamp.substr(0,10);
       date_now = time:add(time:now(),{"hours": -7}).substr(0,10);
     }
-    if date_now > last_report_date then noop();
+    if date_now.klog("now") > last_report_date.klog("last") then noop();
     fired {
       ent:tags{[id,"count"]} := 0;
     }
