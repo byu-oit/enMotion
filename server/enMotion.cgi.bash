@@ -9,6 +9,7 @@ then
   ECI="Ff42Ae6BK9cJAq6mkMeMaP"
 fi
 NPE=`curl localhost:8080/sky/event/$ECI/none/tag/scanned?id=$TAG&tag_domain=enMotion`
+ORD=`echo "$NPE" | grep -o 'ordinal":"[^"]*"' | cut -d '"' -f 3`
 MSG="Thank you for reporting a problem with this enMotion dispenser ($TAG). Expect a repair by start of next business day."
 BLDG_ECI=`curl localhost:8080/sky/cloud/DME49grtAihjo9aZLiXzVw/edu.byu.enMotion.site/buildingECI?bldg=$BLDG | tr -d '"'`
 cat <<EOF
@@ -39,6 +40,7 @@ html, body { height: 100%; }
 </byu-header>
 <div class="page-content">
 <p>$MSG</p>
+<p>Yours is the $ORD report today.</p>
 <pre>$BLDG_ECI</pre>
 <pre>$NPE</pre>
 </div>
