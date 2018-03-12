@@ -50,7 +50,7 @@ ruleset edu.byu.enMotion {
     pre {
       last_report_timestamp = ent:tags{[id,"timestamp"]}.defaultsTo(earliest_date);
       last_report_date = last_report_timestamp.substr(0,10);
-      date_now = time:add(time:now(),{"hours": -7}).substr(0,10);
+      date_now = time:add(time:now(),{"hours": -6}).substr(0,10);
     }
     if date_now.klog("now") > last_report_date.klog("last") then noop();
     fired {
@@ -60,7 +60,7 @@ ruleset edu.byu.enMotion {
   rule count_and_timestamp_problem_report {
     select when tag scanned id re#^(.*)$# setting(id)
     pre {
-      now = time:add(time:now(),{"hours": -7}); // MST
+      now = time:add(time:now(),{"hours": -6}); // MDT
       count = ent:tags{[id,"count"]} + 1;
     }
     send_directive("count",{"ordinal":ordinalize(count)});
