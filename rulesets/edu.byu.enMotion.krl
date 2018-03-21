@@ -20,7 +20,7 @@ ruleset edu.byu.enMotion {
       id => ent:tags{[id,"status"]} | ent:tags
     }
     statusDay = function(date) {
-      dy = date => date | time:now().substr(0,10);
+      dy = date => date | time:add(time:now(),{"hours": -6}).substr(0,10);
       ld = dy.length();
       eq = function(t1,t2){t1.substr(0,ld)==t2.substr(0,ld)};
       rightDay = function(time){time && eq(time,dy)};
@@ -37,6 +37,22 @@ ruleset edu.byu.enMotion {
              |              "th";
       n.as("String") + suffix;
     }
+    dispensersTagged =<<ITB2005A-H
+ITB2005A-L
+ITB2005A-R
+ITB2005B-H
+ITB2005B-L
+ITB2005B-R
+ITB2025-L
+ITB2025-R
+ITB2208
+ITB3005A-L
+ITB3005A-R
+ITB3005B-L
+ITB3005B-R
+ITB3032
+ITB3210>>.split(re#
+#)
   }
   rule initialization {
     select when tag scanned
@@ -45,20 +61,25 @@ ruleset edu.byu.enMotion {
       ent:tags := {};
     }
   }
+  rule valid_id_guard {
+    select when tag scanned id re#^(.+)$# setting(id)
+    if dispensersTagged >< id then noop();
+    notfired { last; }
+  }
   rule restart_count_for_a_new_day {
-    select when tag scanned id re#^(.*)$# setting(id)
+    select when tag scanned id re#^(.+)$# setting(id)
     pre {
       last_report_timestamp = ent:tags{[id,"timestamp"]}.defaultsTo(earliest_date);
       last_report_date = last_report_timestamp.substr(0,10);
       date_now = time:add(time:now(),{"hours": -6}).substr(0,10);
     }
-    if date_now.klog("now") > last_report_date.klog("last") then noop();
+    if date_now > last_report_date then noop();
     fired {
       ent:tags{[id,"count"]} := 0;
     }
   }
-  rule count_and_timestamp_problem_report {
-    select when tag scanned id re#^(.*)$# setting(id)
+  rule record_timestamp_and_count {
+    select when tag scanned id re#^(.+)$# setting(id)
     pre {
       now = time:add(time:now(),{"hours": -6}); // MDT
       count = ent:tags{[id,"count"]} + 1;
@@ -70,7 +91,7 @@ ruleset edu.byu.enMotion {
     }
   }
   rule first_report_of_the_day {
-    select when tag scanned id re#^(.*)$# setting(id)
+    select when tag scanned id re#^(.+)$# setting(id)
     if ent:tags{[id,"count"]} == 1 then noop();
     fired {
       ent:tags{[id,"status"]} := "problem";

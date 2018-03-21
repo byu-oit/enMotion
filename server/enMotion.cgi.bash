@@ -2,16 +2,17 @@
 echo "Content-type: text/html"
 echo
 TAG=`echo "$QUERY_STRING" | grep -o "id=[A-Z0-9-]*" | cut -d = -f 2`
-BLDG=`echo "$TAG" | grep -o "^[A-Z]*"`
-ECI="VcJtdJmY3nm1ZWsvKqvARP"
-if [ "$BLDG" = "ELWC" ]
-then
-  ECI="Ff42Ae6BK9cJAq6mkMeMaP"
-fi
-NPE=`curl localhost:8080/sky/event/$ECI/none/tag/scanned?id=$TAG&tag_domain=enMotion`
-ORD=`echo "$NPE" | grep -o 'ordinal":"[^"]*"' | cut -d '"' -f 3`
 MSG="Thank you for reporting a problem with this enMotion dispenser ($TAG). Expect a repair by start of next business day."
-BLDG_ECI=`curl localhost:8080/sky/cloud/DME49grtAihjo9aZLiXzVw/edu.byu.enMotion.site/buildingECI?bldg=$BLDG | tr -d '"'`
+BLDG=`echo "$TAG" | grep -o "^[A-Z]*"`
+SITE_ECI="DME49grtAihjo9aZLiXzVw"
+BLDG_ECI=`curl localhost:8080/sky/cloud/$SITE_ECI/edu.byu.enMotion.site/buildingECI?bldg=$BLDG | tr -d '"'`
+NPE=`curl localhost:8080/sky/event/$BLDG_ECI/none/tag/scanned?id=$TAG&tag_domain=enMotion`
+ORD=`echo "$NPE" | grep -o 'ordinal":"[^"]*"' | cut -d '"' -f 3`
+ORD_MSG="We are not tracking this dispenser ($TAG)."
+if [ -n "$ORD" ]
+then
+  ORD_MSG="Yours is the $ORD report today."
+fi
 cat <<EOF
 <!doctype html>
 <html>
@@ -40,7 +41,7 @@ html, body { height: 100%; }
 </byu-header>
 <div class="page-content">
 <p>$MSG</p>
-<p>Yours is the $ORD report today.</p>
+<p>$ORD_MSG</p>
 <pre>$BLDG_ECI</pre>
 <pre>$NPE</pre>
 </div>
