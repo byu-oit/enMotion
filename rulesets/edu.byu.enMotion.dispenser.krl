@@ -7,9 +7,15 @@ ruleset edu.byu.enMotion.dispenser {
                   "events": [ ] }
   }
   rule initialize {
-    select when wrangler ruleset_added where rids >< meta:rid
-    if not ent:status then noop();
+    select when wrangler child_created
+    pre {
+      child_specs = event:attr("rs_attrs");
+      tag_id = child_specs{"name"};
+      room_name = child_specs{"room_name"};
+    }
     fired {
+      ent:tag_id := tag_id;
+      ent:room_name := room_name;
       ent:status := "ok";
     }
   }

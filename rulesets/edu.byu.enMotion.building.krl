@@ -2,38 +2,55 @@ ruleset edu.byu.enMotion.building {
   meta {
     name "enMotion dispensers in a building"
     description <<
-      Hold information about the state of all enMotion* dispensers in a building.
+      Hold information about all enMotion* dispensers in a building.
+      Manage the life cycle of dispenser picos.
       *"enMotion" is a trademark of Georgia-Pacific consumer products LP.
     >>
     author "Crazy Friday Pico Enthusiasts (CFPE)"
-    shares __testing, status
+    shares __testing, eci
   }
   global {
     __testing = { "queries": [ { "name": "__testing" }
-                             , { "name": "status", "args": [ "id" ] }
+                             , { "name": "eci", "args": [ "tag_id" ] }
                              ]
-                , "events": [ { "domain": "tag", "type": "scanned", "attrs": [ "id" ] }
+                , "events": [ { "domain": "tag", "type": "affixed", "attrs": [ "tag_id", "room_name" ] }
                             ]
                 }
-    status = function(id) {
-      ent:tags{[id,"status"]}
+    eci = function(tag_id) {
+      ent:tags{[tag_id,"eci"]}
     }
   }
   rule initialization {
-    select when tag scanned
-    if not ent:tags then noop();
+    select when wrangler ruleset_added where rids >< meta:rid
+    if ent:tags.isnull() then noop();
     fired {
       ent:tags := {};
     }
   }
-  rule report_problem {
-    select when tag scanned
+  rule start_tracking_dispenser {
+    select when tag affixed
     pre {
-      id = event:attr("id");
+      tag_id = event:attr("tag_id");
+      room_name = event:attr("room_name");
+      rids = "edu.byu.enMotion.dispenser";
+      child_specs = { "name": tag_id, "room_name": room_name, "rids": rids, "color": "#002e5d" };
     }
-    if status(id) == "ok" then send_directive("problem reported");
-    always {
-      ent:tags{[id,"status"]} := "problem";
+    if not (ent:tags >< tag_id) then noop();
+    fired {
+      raise wrangler event "new_child_request" attributes child_specs;
+    }
+  }
+  rule pico_new_child_created {
+    select when wrangler new_child_created
+    pre {
+      child_id = event:attr("id");
+      child_specs = event:attr("rs_attrs");
+      tag_id = child_specs{"name"};
+      room_name = child_specs{"room_name"};
+    }
+    engine:newChannel(child_id, tag_id, "dispenser") setting (new_channel);
+    fired {
+      ent:tags{tag_id} := { "tag_id": tag_id, "room_name": room_name, "eci": new_channel{"id"}};
     }
   }
 }
