@@ -79,7 +79,7 @@ ruleset edu.byu.enMotion.dispenser {
         "timestamp": ent:lastTimestamp }
     }
     event:send({"eci": Wrangler:parent_eci,
-      "domain": "tag", "type": "scanned",
+      "domain": "enMotion", "type": "tag_scanned",
       "attrs": summary
     })
     fired {

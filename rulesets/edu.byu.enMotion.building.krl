@@ -8,18 +8,29 @@ ruleset edu.byu.enMotion.building {
     >>
     author "Crazy Friday Pico Enthusiasts (CFPE)"
     provides dispenser_rooms
-    shares __testing, eci
+    shares __testing, eci, status, statusDay
   }
   global {
     __testing = { "queries": [ { "name": "__testing" }
                              , { "name": "eci", "args": [ "tag_id" ] }
+                             , { "name": "status", "args": [ "id" ] }
                              ]
-                , "events": [ { "domain": "tag", "type": "affixed", "attrs": [ "tag_id", "room_name" ] }
-                            , { "domain": "tag", "type": "new_dispensers_ready", "attrs": [ "content" ] }
+                , "events": [ { "domain": "enMotion", "type": "tag_affixed", "attrs": [ "tag_id", "room_name" ] }
+                            , { "domain": "enMotion", "type": "new_dispensers_ready", "attrs": [ "content" ] }
                             ]
                 }
     eci = function(tag_id) {
       ent:tags{[tag_id,"eci"]}
+    }
+    status = function(id) {
+      id => ent:summary{[id,"status"]} | ent:summary
+    }
+    statusDay = function(date) {
+      dy = date => date | time:add(time:now(),{"hours": -6}).substr(0,10);
+      ld = dy.length();
+      eq = function(t1,t2){t1.substr(0,ld)==t2.substr(0,ld)};
+      rightDay = function(time){time && eq(time,dy)};
+      ent:summary.filter(function(v,k){rightDay(v{"timestamp"})})
     }
     import_re = re#^([A-Z]+[0-9]+[^ ]*) (.*)$#;
     dispenser_map = function(line) {
@@ -41,10 +52,11 @@ ruleset edu.byu.enMotion.building {
     if ent:tags.isnull() then noop();
     fired {
       ent:tags := {};
+      ent:summary := {};
     }
   }
   rule start_tracking_dispenser {
-    select when tag affixed
+    select when enMotion tag_affixed
     pre {
       tag_id = event:attr("tag_id");
       room_name = event:attr("room_name");
@@ -70,10 +82,24 @@ ruleset edu.byu.enMotion.building {
     }
   }
   rule import_dispensers {
-    select when tag new_dispensers_ready
+    select when enMotion new_dispensers_ready
     foreach import(event:attr("content")) setting(map)
     fired {
-      raise tag event "affixed" attributes map;
+      raise enMotion event "tag_affixed" attributes map;
+    }
+  }
+  rule record_summary {
+    select when enMotion tag_scanned
+    pre {
+      tag_id = event:attr("id");
+      count = event:attr("count");
+      status = event:attr("status");
+      timestamp = event:attr("timestamp");
+    }
+    fired {
+      ent:summary{[tag_id,"count"]} := count;
+      ent:summary{[tag_id,"status"]} := status;
+      ent:summary{[tag_id,"timestamp"]} := timestamp;
     }
   }
 }
