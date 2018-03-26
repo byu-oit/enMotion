@@ -14,10 +14,22 @@ ruleset edu.byu.enMotion.building {
                              , { "name": "eci", "args": [ "tag_id" ] }
                              ]
                 , "events": [ { "domain": "tag", "type": "affixed", "attrs": [ "tag_id", "room_name" ] }
+                            , { "domain": "tag", "type": "new_dispensers_ready", "attrs": [ "content" ] }
                             ]
                 }
     eci = function(tag_id) {
       ent:tags{[tag_id,"eci"]}
+    }
+    import_re = re#^([A-Z]+[0-9]+[^ ]*) (.*)$#;
+    dispenser_map = function(line) {
+      parts = line.extract(import_re);
+      { "tag_id": parts[0], "room_name": parts[1]}
+    }
+    import = function(content) {
+      newline = (13.chr() + "?" + 10.chr()).as("RegExp");
+      content.split(newline)
+             .filter(function(line){line.match(import_re)})
+             .map(dispenser_map)
     }
   }
   rule initialization {
@@ -51,6 +63,13 @@ ruleset edu.byu.enMotion.building {
     engine:newChannel(child_id, tag_id, "dispenser") setting (new_channel);
     fired {
       ent:tags{tag_id} := { "tag_id": tag_id, "room_name": room_name, "eci": new_channel{"id"}};
+    }
+  }
+  rule import_dispensers {
+    select when tag new_dispensers_ready
+    foreach import(event:attr("content")) setting(map)
+    fired {
+      raise tag event "affixed" attributes map;
     }
   }
 }
