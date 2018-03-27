@@ -78,8 +78,8 @@ ruleset edu.byu.enMotion.dispenser {
       summary = {"id": ent:tag_id, "count": ent:count, "status": ent:status,
         "timestamp": ent:lastTimestamp }
     }
-    event:send({"eci": Wrangler:parent_eci,
-      "domain": "enMotion", "type": "tag_scanned",
+    event:send({"eci": Wrangler:parent_eci(),
+      "domain": "tag", "type": "scanned",
       "attrs": summary
     })
     fired {
