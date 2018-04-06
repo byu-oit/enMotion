@@ -102,4 +102,25 @@ ruleset edu.byu.enMotion.building {
       ent:summary{[tag_id,"timestamp"]} := timestamp;
     }
   }
+  rule gather_summary {
+    select when enMotion summary_needed
+    pre {
+      correlation_id = random:uuid();
+      // limited by date range?
+    }
+    fired {
+      raise enMotion event "gather_summary_started" attributes { "cid": correlation_id }
+    }
+  }
+  rule start_gather_phase {
+    select when enMotion gather_summary_started
+    foreach ent:tags setting(tag)
+    event:send({"eci": tag{"eci"},
+      "domain": "enMotion", "type": "summary_needed",
+      "attributes": event:attrs})
+  }
+  rule gather_response {
+    select when enMotion dispenser_summary_provided
+    
+  }
 }
