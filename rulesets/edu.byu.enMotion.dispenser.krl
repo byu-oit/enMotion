@@ -1,7 +1,7 @@
 ruleset edu.byu.enMotion.dispenser {
   meta {
     use module io.picolabs.wrangler alias Wrangler
-    shares __testing
+    shares __testing, statusDay
   }
   global {
     __testing = { "queries": [ { "name": "__testing" } ],
@@ -15,6 +15,13 @@ ruleset edu.byu.enMotion.dispenser {
              | unit == 3 => "rd"
              |              "th";
       n.as("String") + suffix;
+    }
+    statusDay = function(date) {
+      dy = date => date | time:add(time:now(),{"hours": -6}).substr(0,10);
+      ld = dy.length();
+      eq = function(t1,t2){t1.substr(0,ld)==t2.substr(0,ld)};
+      rightDay = function(time){time && eq(time,dy)};
+      ent:scans.filter(function(v,k){rightDay(v{"timestamp"})})
     }
   }
   rule initialize {
