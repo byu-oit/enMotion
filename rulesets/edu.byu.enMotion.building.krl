@@ -115,6 +115,9 @@ ruleset edu.byu.enMotion.building {
   rule start_gather_phase {
     select when enMotion gather_summary_started
     foreach ent:tags setting(tag)
+    pre {
+      unused = tag{"tag_id"}.klog("tag_id")
+    }
     event:send({"eci": tag{"eci"},
       "domain": "enMotion", "type": "summary_needed",
       "attributes": event:attrs})
