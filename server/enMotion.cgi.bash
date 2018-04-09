@@ -1,13 +1,15 @@
 #!/bin/bash
+SID=`od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}'`
 echo "Content-type: text/html"
+echo "Set-Cookie: SID=$SID"
 echo
 TAG=`echo "$QUERY_STRING" | grep -o "id=[A-Z0-9-]*" | cut -d = -f 2`
 BLDG_ECI="VcJtdJmY3nm1ZWsvKqvARP"
-DSPR_ECI=`curl localhost:8080/sky/cloud/$BLDG_ECI/edu.byu.enMotion.building/eci.txt?tag_id=$TAG`
+DSPR_ECI=`curl "localhost:8080/sky/cloud/$BLDG_ECI/edu.byu.enMotion.building/eci.txt?tag_id=$TAG"`
 if [ -n "$DSPR_ECI" ]
 then
   MSG="Thank you for reporting a problem with this enMotion dispenser ($TAG). Expect a repair by start of next business day."
-  NPE=`curl localhost:8080/sky/event/$DSPR_ECI/none/tag/scanned?id=$TAG`
+  NPE=`curl "localhost:8080/sky/event/$DSPR_ECI/none/tag/scanned?id=$TAG&SID=$SID"`
   ORD=`echo "$NPE" | grep -o 'ordinal":"[^"]*"' | cut -d '"' -f 3`
   ORD_MSG=""
   if [ -n "$ORD" ]
@@ -46,8 +48,6 @@ html, body { height: 100%; }
 <div class="page-content">
 <p>$MSG</p>
 <p>$ORD_MSG</p>
-<pre>$DSPR_ECI</pre>
-<pre>$NPE</pre>
 </div>
 <byu-footer></byu-footer>
 </div>
