@@ -108,6 +108,8 @@ ruleset edu.byu.enMotion.building {
       correlation_id = random:uuid();
       // limited by date range?
     }
+    send_directive("summary_collection_started",
+      {"cid": correlation_id, "size": ent:tags.length()})
     fired {
       raise enMotion event "gather_summary_started" attributes { "cid": correlation_id }
     }
