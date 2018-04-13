@@ -79,7 +79,7 @@ ruleset edu.byu.enMotion.dispenser {
       raise enMotion event "problem_reported" attributes event:attrs;
     }
   }
-  rule send_summary_to_building {
+  rule send_latest_to_building {
     select when tag scanned
     pre {
       summary = {"id": ent:tag_id, "count": ent:count, "status": ent:status,
@@ -92,5 +92,15 @@ ruleset edu.byu.enMotion.dispenser {
     fired {
       raise enMotion event "summary_sent" attributes summary;
     }
+  }
+  rule send_summary_to_building {
+    select when enMotion summary_needed
+    pre {
+      response = { "tag_id": ent:tag_id, "scans": ent:scans }
+    }
+    event:send({"eci": Wrangler:parent_eci(),
+      "domain": "enMotion", "type": "dispenser_summary_provided",
+      "attrs": response
+    })
   }
 }
