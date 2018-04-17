@@ -8,15 +8,17 @@ ruleset edu.byu.enMotion.building {
     >>
     author "Crazy Friday Pico Enthusiasts (CFPE)"
     provides dispenser_rooms
-    shares __testing, eci, status, statusDay
+    shares __testing, eci, status, statusDay, summaries
   }
   global {
     __testing = { "queries": [ { "name": "__testing" }
                              , { "name": "eci", "args": [ "tag_id" ] }
                              , { "name": "status", "args": [ "id" ] }
+                             , { "name": "summaries", "args": [ "cid" ] }
                              ]
                 , "events": [ { "domain": "enMotion", "type": "tag_affixed", "attrs": [ "tag_id", "room_name" ] }
                             , { "domain": "enMotion", "type": "new_dispensers_ready", "attrs": [ "content" ] }
+                            , { "domain": "enMotion", "type": "summaries_not_needed", "attrs": [] }
                             ]
                 }
     eci = function(tag_id) {
@@ -45,6 +47,9 @@ ruleset edu.byu.enMotion.building {
     }
     dispenser_rooms = function() {
       ent:tags.map(function(v){v{"room_name"}})
+    }
+    summaries = function(cid) {
+      ent:summaries{cid}
     }
   }
   rule initialization {
@@ -102,30 +107,44 @@ ruleset edu.byu.enMotion.building {
       ent:summary{[tag_id,"timestamp"]} := timestamp;
     }
   }
+  rule clear_summaries {
+    select when enMotion summaries_not_needed
+    fired {
+      clear ent:summaries;
+    }
+  }
   rule gather_summary {
     select when enMotion summary_needed
     pre {
       correlation_id = random:uuid();
-      // limited by date range?
+      // limited by date range? building floor?
     }
     send_directive("summary_collection_started",
       {"cid": correlation_id, "size": ent:tags.length()})
     fired {
-      raise enMotion event "gather_summary_started" attributes { "cid": correlation_id }
+      raise enMotion event "gather_summary_started" attributes { "cid": correlation_id };
+      ent:summaries := ent:summaries.defaultsTo({});
     }
   }
   rule start_gather_phase {
     select when enMotion gather_summary_started
     foreach ent:tags setting(tag)
     pre {
-      unused = tag{"tag_id"}.klog("tag_id")
+      tag_id = tag{"tag_id"}.klog("tag_id");
     }
     event:send({"eci": tag{"eci"},
       "domain": "enMotion", "type": "summary_needed",
-      "attributes": event:attrs})
+      "attrs": event:attrs})
   }
   rule gather_response {
     select when enMotion dispenser_summary_provided
-    
+    pre {
+      cid = event:attr("cid");
+      tag_id = event:attr("tag_id");
+      scans = event:attr("scans");
+    }
+    fired {
+      ent:summaries{[cid,tag_id]} := scans;
+    }
   }
 }

@@ -96,7 +96,8 @@ ruleset edu.byu.enMotion.dispenser {
   rule send_summary_to_building {
     select when enMotion summary_needed
     pre {
-      response = { "tag_id": ent:tag_id, "scans": ent:scans }
+      cid = event:attr("cid").klog("cid");
+      response = { "cid": cid, "tag_id": ent:tag_id, "scans": ent:scans }
     }
     event:send({"eci": Wrangler:parent_eci(),
       "domain": "enMotion", "type": "dispenser_summary_provided",
