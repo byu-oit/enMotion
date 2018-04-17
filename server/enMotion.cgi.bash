@@ -48,6 +48,7 @@ html, body { height: 100%; }
 <div class="page-content">
 <p>$MSG</p>
 <p>$ORD_MSG</p>
+<p>Please take <a href="https://goo.gl/forms/cmfV1UChpur0m8n22">our survey</a></p>
 </div>
 <byu-footer></byu-footer>
 </div>
