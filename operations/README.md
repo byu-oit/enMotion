@@ -17,4 +17,4 @@ NOTE: Steps 11 and 12 are now done for us by Olivia's people, so just give the s
 
 "enMotion" is a registered trademark of Georgia-Pacific
 
-"QR Code" ia a registered trademark of DENSO WAVE INCORPORATED
+"QR Code" ia a registered trademark of Denso Corporation
