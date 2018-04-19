@@ -1,0 +1,9 @@
+ITB1012 Break Room
+ITB1019A-L MEN
+ITB1019A-R MEN
+ITB1019B-L WOMEN
+ITB1019B-R WOMEN
+ITB1114 Shop Area
+ITB1118A Shop
+ITB1203 Network Engineering
+ITB1208 Infrastructure Implementation
