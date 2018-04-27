@@ -11,6 +11,7 @@ MVP for team use
 - handle information/child_deleted event \[tech debt]
 - event to register a dispenser (with initial status of "ok") ✓
 - UI responding to tag scan ✓
+- UI and events to report specific problem
 - notification of first problem report to slack channel
 - event to report that a dispenser problem has been fixed
 
