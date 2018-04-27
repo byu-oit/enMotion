@@ -8,6 +8,7 @@ MVP for team use
 - query for particular dispenser status ✓
 - event to report a problem with a particular dispenser ✓
 - one pico per registered dispenser \[tech debt] ✓
+- handle information/child_deleted event \[tech debt]
 - event to register a dispenser (with initial status of "ok") ✓
 - UI responding to tag scan ✓
 - notification of first problem report to slack channel
