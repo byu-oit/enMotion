@@ -89,7 +89,8 @@ ruleset edu.byu.enMotion.building {
       tag_id = child_specs{"name"};
       room_name = child_specs{"room_name"};
     }
-    engine:newChannel(child_id, tag_id, "dispenser") setting (new_channel);
+    if room_name then
+      engine:newChannel(child_id, tag_id, "dispenser") setting (new_channel);
     fired {
       ent:tags{tag_id} := { "tag_id": tag_id, "room_name": room_name, "eci": new_channel{"id"}};
     }
@@ -99,6 +100,16 @@ ruleset edu.byu.enMotion.building {
     foreach import(event:attr("content")) setting(map)
     fired {
       raise enMotion event "tag_affixed" attributes map;
+    }
+  }
+  rule stop_tracking_dispenser {
+    select when information child_deleted
+    pre {
+      tag_id = event:attr("name");
+    }
+    if ent:tags >< tag_id then noop();
+    fired {
+      clear ent:tags{tag_id};
     }
   }
   rule record_summary {
