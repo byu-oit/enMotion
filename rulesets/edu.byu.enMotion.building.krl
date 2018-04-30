@@ -7,7 +7,7 @@ ruleset edu.byu.enMotion.building {
       *"enMotion" is a trademark of Georgia-Pacific consumer products LP.
     >>
     author "Crazy Friday Pico Enthusiasts (CFPE)"
-    provides dispenser_rooms
+    provides dispenser_rooms, dispenser_summary
     shares __testing, eci, status, statusDay, summaries
   }
   global {
@@ -50,6 +50,14 @@ ruleset edu.byu.enMotion.building {
     }
     summaries = function(cid) {
       ent:summaries{cid}
+    }
+    dispenser_summary = function(){
+      augment_tag = function(v,k){
+        tag_id = k;
+        summary = ent:summary{tag_id};
+        v.put("summary",summary)
+      };
+      ent:tags.map(augment_tag)
     }
   }
   rule initialization {
