@@ -6,7 +6,7 @@ ruleset edu.byu.enMotion.collection {
   global {
     __testing = { "queries": [ { "name": "__testing" },
                                { "name": "members" } ],
-                  "events": [ ] }
+                  "events": [ {"domain": "wrangler", "type": "deletion_imminent"} ] }
     members = function(){
       Subs:established("Tx_role","member")
     }
@@ -24,6 +24,15 @@ ruleset edu.byu.enMotion.collection {
     } else {
       raise wrangler event "inbound_rejection"
         attributes { "Rx": event:attr("Rx") } // event:attrs doesn't work!
+    }
+  }
+  rule delete_member_subscriptions {
+    select when wrangler deletion_imminent
+    foreach members() setting(subs)
+    fired {
+      raise wrangler event "subscription_cancellation"
+        attributes { "Rx": subs{"Rx"}, "Tx": subs{"Tx"} };
+      raise wrangler event "ready_for_deletion" on final;
     }
   }
 }
