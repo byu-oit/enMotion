@@ -48,6 +48,7 @@ software:
       - KRL
       - HTML
       - Shell
+      - JavaScript
     type: library
     data_sensitivity: confidential
     standard_change_template:
