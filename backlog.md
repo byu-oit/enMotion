@@ -12,14 +12,16 @@ MVP for team use
 - event to register a dispenser (with initial status of "ok") ✓
 - UI responding to tag scan ✓
 - UI and events to report specific problem
-- notification of first problem report to slack channel
+- notification of first problem report to slack channel (∃ a slackbot test channel)
 - event to report that a dispenser problem has been fixed
+- escalated notification of _all_ dispensers having a problem in a room (including rooms with only one)
 
 MVP for Facilities team use
 - determine needs
 - query for dispenser history
 - query for problems reported today ✓
 - UI for today's problem report
+- interface with ServiceNow (∃ a test version (in slackbot test channel))
 
 MVP for general ITB use
 - gather usability information
