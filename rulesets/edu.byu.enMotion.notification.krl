@@ -12,7 +12,7 @@ ruleset edu.byu.enMotion.notification {
       , { "domain": "notification", "type": "new_keys", "attrs": [ "keys" ] }
       ]
     }
-    channel = "#physical_facilities"
+    channel = "#slack-bot-testing" //"#physical_facilities"
     hook = "https://hooks.slack.com/services"
   }
   rule stash_keys {
@@ -25,13 +25,20 @@ ruleset edu.byu.enMotion.notification {
   }
   rule test_notification {
     select when notification test
+    pre {
+      body = { "channel": channel,
+               "text": "testing; please ignore",
+               "username": vp:dname() }
+    }
     if app:keys then // sanity check
     every {
-      http:post(<<#{hook}/#{app:keys}>>,
-        body = <<{ "channel": "#{channel}",>>
-             + << "text": "testing #{vp:dname()}; please ignore"}>>)
+      http:post(<<#{hook}/#{app:keys}>>,body=body.encode())
         setting(postResult)
       send_directive("postResult",postResult)
+    }
+    fired {
+      ent:lastMessage := body;
+      ent:lastResponse := postResult;
     }
   }
 }
