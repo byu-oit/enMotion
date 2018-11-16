@@ -41,4 +41,20 @@ ruleset edu.byu.enMotion.notification {
       ent:lastResponse := postResult;
     }
   }
+  rule notify_on_first_problem {
+    select when enMotion problem_reported
+    pre {
+      body = { "channel": channel,
+               "text": "problem reported for dispenser "+event:attr("id"),
+               "username": vp:dname() }
+    }
+    if app:keys then // sanity check
+      http:post(<<#{hook}/#{app:keys}>>,body=body.encode())
+        setting(postResult)
+    fired {
+      ent:lastEvent := event:attrs;
+      ent:lastMessage := body;
+      ent:lastResponse := postResult;
+    }
+  }
 }
