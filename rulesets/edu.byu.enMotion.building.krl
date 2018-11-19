@@ -18,6 +18,7 @@ ruleset edu.byu.enMotion.building {
                              ]
                 , "events": [ { "domain": "enMotion", "type": "tag_affixed", "attrs": [ "tag_id", "room_name" ] }
                             , { "domain": "enMotion", "type": "new_dispensers_ready", "attrs": [ "content" ] }
+                            , { "domain": "enMotion", "type": "summary_needed", "attrs": [] }
                             , { "domain": "enMotion", "type": "summaries_not_needed", "attrs": [] }
                             ]
                 }
