@@ -1,10 +1,13 @@
 ruleset edu.byu.enMotion.dispenser {
   meta {
     use module io.picolabs.wrangler alias Wrangler
-    shares __testing, statusDay
+    shares __testing, statusDay, summary
   }
   global {
-    __testing = { "queries": [ { "name": "__testing" } ],
+    __testing = { "queries": [ { "name": "__testing" }
+                    , { "name": "statusDay", "args": [ "date" ] }
+                    , { "name": "summary", "args": [ ] }
+                    ],
                   "events": [ ] }
     ordinalize = function(n) {
       unit = n % 10;
@@ -22,6 +25,21 @@ ruleset edu.byu.enMotion.dispenser {
       eq = function(t1,t2){t1.substr(0,ld)==t2.substr(0,ld)};
       rightDay = function(time){time && eq(time,dy)};
       ent:scans.filter(function(v,k){rightDay(v{"timestamp"})})
+    }
+    ts_re = re#^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})[.]\d{3}Z$#
+    dateAndTime = function(ts) {
+      ts.extract(ts_re)
+    }
+    summary = function() {
+      sep = ",";
+      lf = 10.chr();
+      oneLine = function(v){
+        dt = dateAndTime(v{"timestamp"});
+        c = v{"count"}.as("String");
+        s = v{"status"}.defaultsTo("");
+        dt.join(" ") + sep + c + sep + s
+      };
+      ent:scans.values().reduce(function(a,v){a+(a=>lf|"")+oneLine(v)},"")
     }
   }
   rule initialize {
