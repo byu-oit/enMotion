@@ -33,13 +33,14 @@ ruleset edu.byu.enMotion.dispenser {
     summary = function() {
       sep = ",";
       lf = 10.chr();
+      header = "timestamp" + sep + "count" + sep + "status" + sep + ent:room_name;
       oneLine = function(v){
         dt = dateAndTime(v{"timestamp"});
         c = v{"count"}.as("String");
         s = v{"status"}.defaultsTo("");
         dt.join(" ") + sep + c + sep + s
       };
-      ent:scans.values().reduce(function(a,v){a+(a=>lf|"")+oneLine(v)},"")
+      ent:scans.values().reduce(function(a,v){a+lf+oneLine(v)},header)
     }
   }
   rule initialize {
