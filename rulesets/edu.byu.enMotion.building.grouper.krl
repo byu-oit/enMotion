@@ -1,11 +1,12 @@
 ruleset edu.byu.enMotion.building.grouper {
   meta {
     use module edu.byu.enMotion.building alias building
-    shares __testing, by_prefix
+    shares __testing, by_prefix, by_key_prefix
   }
   global {
     __testing = { "queries": [ { "name": "__testing" },
-                               { "name": "by_prefix", "args": [ "name_prefix" ] } ],
+                               { "name": "by_prefix", "args": [ "name_prefix" ] },
+                               { "name": "by_key_prefix", "args": [ "key_prefix" ] } ],
                   "events": [ {"domain":"grouper","type":"creation","attrs":["name_prefix"]}] }
     //-----------------------------------
     //compute array of dispenser picos whose names have a given prefix
@@ -13,6 +14,13 @@ ruleset edu.byu.enMotion.building.grouper {
     by_prefix = function(name_prefix) {
       prefix_re = ("^"+name_prefix).as("RegExp");
       building:dispenser_rooms().filter(function(v){v like prefix_re})
+    }
+    //-----------------------------------
+    //compute array of dispenser picos whose names have a given prefix
+    //
+    by_key_prefix = function(key_prefix) {
+      prefix_re = ("^"+key_prefix).as("RegExp");
+      building:dispenser_rooms().filter(function(v,k){k like prefix_re})
     }
     //-----------------------------------
     //obtain subscription request ECI for a dispenser pico, or null
